@@ -207,12 +207,12 @@ class RectangularRoom(object):
         return final
 
 r = RectangularRoom(2,2,3)
-nt = r.get_num_tiles()
+#nt = r.get_num_tiles()
 ct = r.get_num_cleaned_tiles()
-print (r,nt, ct)
+print (r, ct)
 r.clean_tile_at_position ((1,1),0)
-ct = r.get_num_cleaned_tiles()
-print (r.tile , ct)
+#ct = r.get_num_cleaned_tiles()
+#print (r.tile , ct)
 print (r.is_tile_cleaned(2,2), r.is_tile_cleaned(1,1))
 print (r.is_position_in_room((1,1)), r.is_position_in_room((10,10)))
 print (r.get_dirt_amount(2,2), r.get_dirt_amount(1,1))
@@ -239,12 +239,20 @@ class Robot(object):
         capacity: a positive interger; the amount of dirt cleaned by the robot
                   in a single time-step
         """
-        raise NotImplementedError
+        if speed > 0.0 and capacity >0:
+            self.room = room
+            self.speed = speed
+            self.capacity = capacity
+            self.robot_pos = random.random(),random.random()
+            self.robot_d = random.uniform(0.0,360.0)
+        else:
+            raise NotImplementedError
 
     def get_robot_position(self):
         """
         Returns: a Position object giving the robot's position in the room.
         """
+        return self.robot_pos
         raise NotImplementedError
 
     def get_robot_direction(self):
@@ -252,6 +260,7 @@ class Robot(object):
         Returns: a float d giving the direction of the robot as an angle in
         degrees, 0.0 <= d < 360.0.
         """
+        return self.robot_d
         raise NotImplementedError
 
     def set_robot_position(self, position):
@@ -260,7 +269,9 @@ class Robot(object):
 
         position: a Position object.
         """
-        raise NotImplementedError
+#        xrobot, yrobot= position
+        self.robot_pos = position
+#        raise NotImplementedError
 
     def set_robot_direction(self, direction):
         """
@@ -268,7 +279,8 @@ class Robot(object):
 
         direction: float representing an angle in degrees
         """
-        raise NotImplementedError
+        self.robot_d = direction
+#        raise NotImplementedError
 
     def update_position_and_clean(self):
         """
@@ -280,6 +292,14 @@ class Robot(object):
         """
         # do not change -- implement in subclasses
         raise NotImplementedError
+
+robot = Robot(r,1,2)
+print("random robot position:", robot.get_robot_position())
+print ("random robot direction:", robot.get_robot_direction())
+robot.set_robot_position((1,1))
+print("new robot position:" , robot.get_robot_position())
+robot.set_robot_direction(95)
+print ("new robot direction:", robot.get_robot_direction())
 
 # === Problem 2
 class EmptyRoom(RectangularRoom):
