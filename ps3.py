@@ -117,11 +117,11 @@ class RectangularRoom(object):
         if capacity <=0:
             self.tile[(xtile, ytile)] = 0
         else:
-            print("removing dirt", self.tile[(xtile, ytile)], self.dirt_amount, capacity)
+            #print("removing dirt", self.tile[(xtile, ytile)], self.dirt_amount, capacity)
             self.tile[(xtile,ytile)] = self.tile[(xtile,ytile)] - capacity
             if self.tile[(xtile,ytile)] < 0: self.tile[(xtile,ytile)] = 0
 
-            print("removed dirt", self.tile[(xtile, ytile)], self.dirt_amount, capacity)
+            #print("removed dirt", self.tile[(xtile, ytile)], self.dirt_amount, capacity)
             #raise NotImplementedError
 
     def is_tile_cleaned(self, m, n):
@@ -330,7 +330,7 @@ class EmptyRoom(RectangularRoom):
         x_er_tile = pos.get_x()
         y_er_tile = pos.get_y()
 #        x_er_tile, y_er_tile = pos
-        print("valid?, robot position:", x_er_tile, y_er_tile, "room", self.width, self.height)
+        #print("valid?, robot position:", x_er_tile, y_er_tile, "room", self.width, self.height)
         if 0 < x_er_tile < self.width and 0 < y_er_tile < self.height:
             return True
         else:
@@ -411,12 +411,12 @@ class FurnishedRoom(RectangularRoom):
         """
         x_tile_pos = math.floor(pos.get_x())
         y_tile_pos = math.floor(pos.get_y())
-        print( x_tile_pos, y_tile_pos, self.furniture_tiles)
+        #print( x_tile_pos, y_tile_pos, self.furniture_tiles)
         if (x_tile_pos,y_tile_pos) in self.furniture_tiles:
-            print("position in hte furniture, no valid")
+            #print("position in hte furniture, no valid")
             return True
         else:
-            print ("position is valid")
+            #print ("position is valid")
             return False
         raise NotImplementedError
 
@@ -432,7 +432,7 @@ class FurnishedRoom(RectangularRoom):
         x_er_tile = pos.get_x()
         y_er_tile = pos.get_y()
 #        x_er_tile, y_er_tile = pos
-        print("valid?, robot position:", x_er_tile, y_er_tile, "room", self.width, self.height)
+        #print("valid?, robot position:", x_er_tile, y_er_tile, "room", self.width, self.height)
         if 0 < x_er_tile < self.width and 0 < y_er_tile < self.height:
             return True
         else:
@@ -454,10 +454,10 @@ class FurnishedRoom(RectangularRoom):
         Returns: a Position object; a valid random position (inside the room and not in a furnished area).
         """
         pos = random.randint(0,self.width), random.randint(0,self.height)
-        print (pos, self.furniture_tiles)
+        #print (pos, self.furniture_tiles)
         while pos is self.furniture_tiles:
             pos = random.randint(0,self.width), random.randint(0,self.height)
-            print (pos, self.furniture_tiles)
+            #print (pos, self.furniture_tiles)
 
         return pos
 
@@ -505,13 +505,13 @@ class StandardRobot(Robot):
         pos = Position(x_new_robot_pos , y_new_robot_pos)
         """
         pos = self.robot_pos.get_new_position(random.uniform(0.0,360.0),self.speed)
-        print (pos)
+        #print (pos)
         if self.room.is_position_valid(pos):
-            print ("position is valid", pos.get_x(), pos.get_y())
+            #print ("position is valid", pos.get_x(), pos.get_y())
             self.robot_pos = pos
-            print ("capacity:", self.capacity, "avant tile:", pos.get_x(),pos.get_y(),self.room.dirt_amount)
+            #print ("capacity:", self.capacity, "avant tile:", pos.get_x(),pos.get_y(),self.room.dirt_amount)
             self.room.clean_tile_at_position(pos,self.capacity)
-            print ("capacity:", self.capacity, "apres tile:", pos.get_x(),pos.get_y(),self.room.dirt_amount)
+            #print ("capacity:", self.capacity, "apres tile:", pos.get_x(),pos.get_y(),self.room.dirt_amount)
             #self.capacity = self.capacity - self.room.dirt_amount
         else:
             self.set_robot_direction(random.uniform(0.0,360.0))
@@ -520,7 +520,7 @@ class StandardRobot(Robot):
 
 # Uncomment this line to see your implementation of StandardRobot in action!
 #test_robot_movement(StandardRobot, EmptyRoom)
-test_robot_movement(StandardRobot, FurnishedRoom)
+#test_robot_movement(StandardRobot, FurnishedRoom)
 #print ("the robot current position is:", robot.get_robot_position())
 #print ("The new robot position is:", StandardRobot.update_position_and_clean(robot))
 # === Problem 4
@@ -561,7 +561,23 @@ class FaultyRobot(Robot):
         StandardRobot at this time-step (checking if it can move to a new position,
         move there if it can, pick a new direction and stay stationary if it can't)
         """
-        raise NotImplementedError
+        pos = self.robot_pos.get_new_position(random.uniform(0.0,360.0),self.speed)
+        #print (pos)
+        if self.room.is_position_valid(pos):
+            #print ("position is valid", pos.get_x(), pos.get_y())
+            self.robot_pos = pos
+            if self.gets_faulty():
+                #print ("robot is faulty")
+                self.set_robot_direction(random.uniform(0.0,360.0))
+            else:
+                #print ("capacity:", self.capacity, "avant tile:", pos.get_x(),pos.get_y(),self.room.dirt_amount)
+                self.room.clean_tile_at_position(pos,self.capacity)
+                #print ("capacity:", self.capacity, "apres tile:", pos.get_x(),pos.get_y(),self.room.dirt_amount)
+            #self.capacity = self.capacity - self.room.dirt_amount
+        else:
+            self.set_robot_direction(random.uniform(0.0,360.0))
+
+        #raise NotImplementedError
 
 
 #test_robot_movement(FaultyRobot, EmptyRoom)
@@ -588,13 +604,31 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 FaultyRobot)
     """
-    raise NotImplementedError
-
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.9, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
-# print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
+    average = 0
+    total_time_step =0
+    robots = num_robots
+    room = EmptyRoom(width,height,dirt_amount)
+    print("number of robots:", robots)
+    while robots > 0:
+        coverage = 0
+        time_steps = 0
+        #print ("coverage", coverage, "min coverage", min_coverage)
+        robot = robot_type(room, speed, capacity)
+        while coverage < min_coverage:
+            time_steps += 1
+            robot.update_position_and_clean()
+            coverage = float(room.get_num_cleaned_tiles())/room.get_num_tiles()
+            #print ("coverage:", coverage, "time steps:", time_steps)
+        total_time_step = total_time_step + time_steps
+        robots -=1
+    average = total_time_step / num_robots
+    return average
+#run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.9, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
 
 # === Problem 6
 #
