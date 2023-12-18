@@ -22,7 +22,7 @@ class RobotVisualization:
         self.height = height
         self.num_robots = num_robots
         self.furniture_tiles = furniture_tiles
-        
+
         # Initialize a drawing surface
         self.master = Tk()
         self.w = Canvas(self.master, width=500, height=500)
@@ -44,9 +44,9 @@ class RobotVisualization:
                     self.tiles[(i, j)] = self.w.create_rectangle(x1, y1, x2, y2,
                                                                  fill = "black")
                 else:
-                    self.tiles[(i, j)] = self.w.create_rectangle(x1, y1, x2, y2, 
+                    self.tiles[(i, j)] = self.w.create_rectangle(x1, y1, x2, y2,
                                                                    fill = "red")
-                                                                  
+
 
         # Draw gridlines
         for i in range(width + 1):
@@ -114,7 +114,7 @@ class RobotVisualization:
                     self.tiles[(i, j)] = self.w.create_rectangle(x1, y1, x2, y2, fill = str(Hex))
                 elif self.furniture_tiles and room.is_tile_furnished(i, j):
                     self.tiles[(i, j)] = self.w.create_rectangle(x1, y1, x2, y2, fill = 'red')
-                    
+
         # Delete all existing robots.
         if self.robots:
             for robot in self.robots:
@@ -124,6 +124,7 @@ class RobotVisualization:
         self.robots = []
         for robot in robots:
             pos = robot.get_robot_position()
+            #print(pos)
             x, y = pos.get_x(), pos.get_y()
             x1, y1 = self._map_coords(x - 0.08, y - 0.08)
             x2, y2 = self._map_coords(x + 0.08, y + 0.08)
@@ -135,7 +136,7 @@ class RobotVisualization:
         self.w.delete(self.text)
         self.time += 1
         self.text = self.w.create_text(
-            25, 0, anchor=NW,            
+            25, 0, anchor=NW,
             text=self._status_string(self.time, room.get_num_cleaned_tiles(), room.get_num_tiles()))
         self.master.update()
         time.sleep(self.delay)
@@ -143,4 +144,3 @@ class RobotVisualization:
     def done(self):
         "Indicate that the animation is done so that we allow the user to close the window."
         mainloop()
-
