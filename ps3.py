@@ -607,28 +607,36 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     average = 0
     total_time_step =0
     robots = num_robots
-    room = EmptyRoom(width,height,dirt_amount)
     print("number of robots:", robots)
+    delay = 0.2
+    #anim = ps3_visualize.RobotVisualization(num_robots, width, height,False, delay)
     while robots > 0:
         coverage = 0
         time_steps = 0
         #print ("coverage", coverage, "min coverage", min_coverage)
+        room = EmptyRoom(width,height,dirt_amount)
         robot = robot_type(room, speed, capacity)
+
+#        anim = ps3_visualize.RobotVisualization(num_robots, width, height,is_furnished, delay)
         while coverage < min_coverage:
             time_steps += 1
             robot.update_position_and_clean()
             coverage = float(room.get_num_cleaned_tiles())/room.get_num_tiles()
+            #anim.update(room, robot)
             #print ("coverage:", coverage, "time steps:", time_steps)
         total_time_step = total_time_step + time_steps
+#        print("total step:", total_time_step)
         robots -=1
+    #anim.done()
     average = total_time_step / num_robots
+
     return average
 #run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)
 print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
 print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.8, 50, StandardRobot)))
 print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 10, 10, 3, 0.9, 50, StandardRobot)))
-print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
-print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, StandardRobot)))
+print ('avg time steps: ' + str(run_simulation(20, 1.0, 1, 20, 20, 3, 0.8, 50, FaultyRobot)))
+print ('avg time steps: ' + str(run_simulation(20, 1.0, 1, 20, 20, 3, 0.8, 50, StandardRobot)))
 
 # === Problem 6
 #
@@ -636,12 +644,12 @@ print ('avg time steps: ' + str(run_simulation(3, 1.0, 1, 20, 20, 3, 0.5, 50, St
 #
 # 1)How does the performance of the two robot types compare when cleaning 80%
 #       of a 20x20 room?
-#
-#
+#the faulty robot takes more time  steps to clean up the room.
+# 1 fauly robot can take up to 25% more ime, if we increase the umber of robot the difference goes down to 10%
 # 2) How does the performance of the two robot types compare when two of each
 #       robot cleans 80% of rooms with dimensions
 #       10x30, 20x15, 25x12, and 50x6?
-#
+# performance are similar wih a decrease difference qith the number of robots
 #
 
 def show_plot_compare_strategies(title, x_label, y_label):
